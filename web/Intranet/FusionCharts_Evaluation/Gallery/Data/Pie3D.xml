@@ -1,0 +1,10 @@
+<chart palette='4' decimals='0' enableSmartLabels='1' enableRotation='0' bgColor='99CCFF,FFFFFF' bgAlpha='40,100' bgRatio='0,100' bgAngle='360' showBorder='1' startingAngle='70' >
+            <set label='Maternidad' value='10'  />
+            <set label='Endocrinologia' value='12' />
+            <set label='Urologia' value='18' />
+            <set label='Oncologia' value='8' />
+            <set label='Cardiologia' value='25' isSliced='1'/>
+            <set label='Respiratorio' value='16' isSliced='1'/>
+            <set label='Preventivo' value='11' />
+            
+</chart>

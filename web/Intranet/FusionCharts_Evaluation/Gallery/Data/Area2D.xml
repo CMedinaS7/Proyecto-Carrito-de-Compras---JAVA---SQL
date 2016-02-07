@@ -1,0 +1,19 @@
+<chart palette='2' caption='Monthly Sales Summary' subcaption='For the year 2006' xAxisName='Month' yAxisMinValue='15000' yAxisName='Sales' numberPrefix='$' showValues='0'>
+	<set label='Carlos' value='1200' />
+	<set label='Paola' value='800' />
+	<set label='Telmo' value='200' />
+	<set label='Armin' value='280' />
+	<styles>
+		<definition>
+			<style name='Anim1' type='animation' param='_xscale' start='0' duration='1' />
+			<style name='Anim2' type='animation' param='_alpha' start='0' duration='1' />
+			<style name='DataShadow' type='Shadow' alpha='20'/>
+		</definition>
+		<application>
+			<apply toObject='DIVLINES' styles='Anim1' />
+			<apply toObject='HGRID' styles='Anim2' />
+			<apply toObject='DATALABELS' styles='DataShadow,Anim2' />
+	</application>	
+	</styles>
+
+</chart> 

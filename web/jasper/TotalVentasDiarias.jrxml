@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TotalVentasDiarias" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<queryString language="SQL">
+		<![CDATA[SELECT  CONVERT (char(10),  dbo.comprobante.fecha, 103) as 'Fecha', dbo.Personal.Nombres + ' ' +  dbo.Personal.Apellidos as Vendedor, dbo.Personal.DNI, sum(dbo.Detalle_Comprobante.Subtotal) as 'Total'
+FROM         dbo.Comprobante INNER JOIN
+                      dbo.Detalle_Comprobante ON dbo.Comprobante.IdComprobante = dbo.Detalle_Comprobante.IdComprobante INNER JOIN
+                      dbo.Personal ON dbo.Comprobante.IdPersonal = dbo.Personal.IdPersonal INNER JOIN
+                      dbo.Producto ON dbo.Detalle_Comprobante.IdProducto = dbo.Producto.IdProducto INNER JOIN
+                      dbo.Marca ON dbo.Producto.Marca = dbo.Marca.IdMarca
+where CONVERT (char(10),  dbo.comprobante.fecha, 103)=CONVERT (char(10),  getdate(), 103)
+group by Fecha,dbo.Personal.Nombres,dbo.Personal.Apellidos,dbo.Personal.DNI]]>
+	</queryString>
+	<field name="Fecha" class="java.lang.String"/>
+	<field name="Vendedor" class="java.lang.String"/>
+	<field name="DNI" class="java.lang.String"/>
+	<field name="Total" class="java.lang.Integer"/>
+	<variable name="Total_1" class="java.lang.Integer" resetType="Group" resetGroup="Vendedor" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<group name="Fecha">
+		<groupExpression><![CDATA[$F{Fecha}]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<frame>
+					<reportElement mode="Opaque" x="0" y="7" width="555" height="24" forecolor="#B89F7D" backcolor="#000000"/>
+					<textField isStretchWithOverflow="true">
+						<reportElement style="SubTitle" isPrintRepeatedValues="false" x="2" y="0" width="479" height="24" forecolor="#FFFFFF"/>
+						<textElement>
+							<font isBold="false"/>
+						</textElement>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{Fecha}]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<group name="Vendedor">
+		<groupExpression><![CDATA[$F{Vendedor}]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<textField>
+					<reportElement positionType="Float" x="0" y="4" width="307" height="26" forecolor="#000000"/>
+					<textElement>
+						<font fontName="Times New Roman" size="16" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{Vendedor}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Vendedor">
+					<reportElement x="370" y="4" width="163" height="25"/>
+					<textElement>
+						<font size="16"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{Total_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="334" y="4" width="26" height="25"/>
+					<textElement>
+						<font size="16"/>
+					</textElement>
+					<text><![CDATA[S/.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="132" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="405" height="95" backcolor="#3C4662"/>
+				<staticText>
+					<reportElement style="Title" x="0" y="0" width="405" height="66" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center">
+						<font size="48" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Total Ventas del Dia]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="SubTitle" x="156" y="66" width="249" height="29"/>
+					<textElement>
+						<font size="22" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Total por Vendedor]]></text>
+				</staticText>
+			</frame>
+			<image>
+				<reportElement x="405" y="0" width="149" height="95"/>
+				<imageExpression class="java.lang.String"><![CDATA["logo.png"]]></imageExpression>
+			</image>
+			<frame>
+				<reportElement mode="Opaque" x="-1" y="100" width="555" height="32" forecolor="#000000" backcolor="#CC0000"/>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="411" y="12" width="144" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="8" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="18"/>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="2" y="0" width="555" height="24" forecolor="#D0B48E" backcolor="#006666"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="513" y="0" width="40" height="20" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="351" y="0" width="159" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="2" y="1" width="197" height="20" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
